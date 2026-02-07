@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>7 Days of Love 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Nunito', sans-serif;
+  background:url("bg.jpg") center/cover no-repeat;
+}
+
+/* container */
+.container{
+  width:100%;
+  max-width:420px;
+  text-align:center;
+}
+
+/* BIG RESPONSIVE SVG */
+svg{
+  width:100%;
+  height:260px;
+  overflow:visible;
+}
+
+/* curved text */
+.curve-text{
+  fill:#d64b6b;
+  font-size:38px;
+  font-weight:800;
+}
+
+/* gif */
+.gif{
+  width:260px;
+  height:300px;
+  object-fit:contain;
+  margin:0 auto;
+  display:block;
+}
+
+/* wish text */
+.bottom-text{
+  font-size:38px;
+  font-weight:800;
+  color:#d64b6b;
+  margin-top:12px;
+  min-height:50px;
+}
+
+/* buttons */
+.buttons{
+  margin-top:22px;
+  display:flex;
+  justify-content:center;
+  gap:20px;
+}
+
+button{
+  padding:18px 38px;
+  font-size:22px;
+  font-family:'Nunito', sans-serif;
+  font-weight:800;
+  border:none;
+  border-radius:14px;
+  cursor:pointer;
+  background:#ff5d8f;
+  color:white;
+  animation:bounce 2.6s infinite;
+}
+
+@keyframes bounce{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-6px)}
+}
+
+audio{display:none}
+</style>
+</head>
+
+<body>
+
+<audio id="music" src="music.mp3" loop></audio>
+
+<div class="container">
+
+  <!-- DOUBLE CURVE SVG -->
+  <svg viewBox="0 0 420 260" preserveAspectRatio="xMidYMid meet">
+
+    <!-- upper curve -->
+    <path id="curve1" d="M20,180 Q210,40 400,180" fill="transparent"/>
+    <text class="curve-text">
+      <textPath id="topText1" href="#curve1" startOffset="50%" text-anchor="middle"></textPath>
+    </text>
+
+    <!-- lower curve -->
+    <path id="curve2" d="M40,210 Q210,90 380,210" fill="transparent"/>
+    <text class="curve-text">
+      <textPath id="topText2" href="#curve2" startOffset="50%" text-anchor="middle"></textPath>
+    </text>
+
+  </svg>
+
+  <!-- GIF -->
+  <img id="gif" class="gif" src="day1.gif">
+
+  <!-- Bottom text -->
+  <div id="bottomText" class="bottom-text"></div>
+
+  <!-- Buttons -->
+  <div class="buttons" id="buttons"></div>
+
+</div>
+
+<script>
+const pages=[
+ {gif:"day1.gif", line1:"Ready for 7 days of", line2:"love?🥰", bottom:"", btn:"yesno"},
+ {gif:"no.gif", line1:"Why did you click", line2:"no?🥺", bottom:"", btn:"retry"},
+ {gif:"rose.gif", line1:"Phool for my", line2:"fool🌹", bottom:"HAPPY ROSE DAY", btn:"next"},
+ {gif:"propose.gif", line1:"Will you", line2:"be mine? 💞", bottom:"HAPPY PROPOSE DAY", btn:"next"},
+ {gif:"chocolate.gif", line1:"I ate ur", line2:"chocolate btw 🥰", bottom:"HAPPY CHOCOLATE DAY", btn:"next"},
+
+{gif:"teddy.gif", line1:"my personal cuddle", line2:"teddy bear 🧸", bottom:"HAPPY TEDDY DAY", btn:"next"},
+
+ {gif:"promise.gif", line1:"I promise to stay", line2:"by ur side 💞", bottom:"HAPPY PROMISE DAY", btn:"next"},
+ {gif:"hug.gif", line1:"Virtual hug", line2:"for you!🤗", bottom:"HAPPY HUG DAY", btn:"next"},
+ {gif:"kiss.gif", line1:"You wear my kisse", line2:"better than me 😘", bottom:"HAPPY KISS DAY", btn:"next"},
+ {gif:"valentine.gif", line1:"Forever us 💖 ", line2:"love uh 💕", bottom:"HAPPY VALENTINE’S DAY 💗", btn:"exit"}
+];
+
+let index=0;
+
+/* typing helper */
+function typeText(el, text, speed = 70, callback){
+  clearInterval(el._timer);
+  el.textContent="";
+  let i=0;
+  el._timer=setInterval(()=>{
+    el.textContent += text[i] || "";
+    i++;
+    if(i >= text.length){
+      clearInterval(el._timer);
+      if(callback) callback();
+    }
+  }, speed);
+}
+
+function render(){
+  const p = pages[index];
+
+  document.getElementById("gif").src = p.gif;
+
+  const line1 = document.getElementById("topText1");
+  const line2 = document.getElementById("topText2");
+  const bottom = document.getElementById("bottomText");
+
+  line1.textContent="";
+  line2.textContent="";
+  bottom.textContent="";
+
+  /* SEQUENTIAL CURVED TEXT */
+ typeText(line1, p.line1, 70, ()=>{
+  typeText(line2, p.line2, 70);
+});
+
+
+  /* bottom text */
+  typeText(bottom, p.bottom, 70);
+
+  /* buttons */
+  const btn = document.getElementById("buttons");
+  btn.innerHTML="";
+
+  if(p.btn==="yesno"){
+    btn.innerHTML = `
+      <button onclick="yes()">YES</button>
+      <button onclick="no()">NO</button>
+    `;
+  }
+  if(p.btn==="retry"){
+    btn.innerHTML = `<button onclick="retry()">TRY AGAIN</button>`;
+  }
+  if(p.btn==="next"){
+    btn.innerHTML = `<button onclick="next()">NEXT</button>`;
+  }
+}
+
+function yes(){
+  document.getElementById("music").play().catch(()=>{});
+  index=2;
+  render();
+}
+function no(){ index=1; render(); }
+function retry(){ index=0; render(); }
+function next(){ index++; render(); }
+
+render();
+</script>
+
+</body>
+</html>
